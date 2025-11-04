@@ -3,6 +3,7 @@ from sklearn.cluster import KMeans
 class TeamAssigner:
     def __init__(self):
         self.team_colors = {}
+        self.player_team_dict = {}
 
     def get_clustering_model(self,image):
         """clustering the image into two"""
@@ -37,4 +38,15 @@ class TeamAssigner:
         self.kmeans = kmean
         self.team_colors[1] = kmean.cluster_centers_[0]
         self.team_colors[2] = kmean.cluster_centers_[1]
+
+    def get_player_team(self,frame,player_bbox,player_id):
+        if player_id in self.player_team_dict:
+            return self.player_team_dict(player_id)
+        player_color = self.get_player_color(frame, player_bbox)
+        team_id = self.kmeans.predict(player_color.reshape(1,-1))[0]
+        team_id+=1
+
+        self.player_team_dict[player_id] = team_id
+
+        return team_id
 
