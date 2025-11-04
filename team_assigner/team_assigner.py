@@ -1,0 +1,40 @@
+from sklearn.cluster import KMeans
+
+class TeamAssigner:
+    def __init__(self):
+        self.team_colors = {}
+
+    def get_clustering_model(self,image):
+        """clustering the image into two"""
+        image_2d = image.reshape(-1,3)
+        kmeans = KMeans(n_clusters=2,init='k-means++',n_init=1).fit(image_2d)
+        return kmeans
+
+    def get_player_color(self,frame,bbox):
+        """getting color of the player t-shirt and clustering it"""
+        image = frame[int(bbox[1]):int(bbox[3]),int(bbox[0]):int(bbox[2])]
+        top_half_image = image[0:int(image.shape[0]/2), :]
+        kmeans = self.get_clustering_model(top_half_image)
+        labels = kmeans.labels_
+        clustered_image = labels.reshape(top_half_image.shape[0],top_half_image.shape[1])
+        corners_clusters = [clustered_image[0, 0],clustered_image[0, -1],clustered_image[-1, 0],clustered_image[-1,-1]]
+        non_player_cluster = max(set(corners_clusters), key=corners_clusters.count)
+        player_cluster = 1 - non_player_cluster
+        player_color = kmeans.cluster_centers_(player_cluster)
+        return player_color
+    
+    def assign_team_color(self,frame,player_detections):
+        """assigning team colors"""
+        player_colors = []
+        for _, player_detection in player_detections.items():
+            bbox = player_detection['bbox']
+            player_color = self.get_player_color(frame,bbox)
+            player_colors.append(player_color)
+        
+        kmean = kmean(n_clusters=2,init="k-means++",n_init=1)
+        kmean.fit(player_color)
+
+        self.kmeans = kmean
+        self.team_colors[1] = kmean.cluster_centers_[0]
+        self.team_colors[2] = kmean.cluster_centers_[1]
+
