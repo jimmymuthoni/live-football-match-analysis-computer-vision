@@ -3,3 +3,4 @@ roboflow
 opencv-python
 supervision
 numpy
+pandas
