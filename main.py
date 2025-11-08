@@ -1,12 +1,13 @@
-from utils import read_video, save_video
-from trackers import Tracker
+from utils.bbox_utils import *
+from utils.video_utils import *
+from trackers.tracker import Tracker
 import os
 import numpy as np
 os.makedirs("output_videos", exist_ok=True)
-from team_assigner import TeamAssigner
-from player_ball_assigner import PlayerBallAssigner
+from team_assigner.team_assigner import TeamAssigner
+from player_ball_assigner.player_ball_assigner import PlayerBallAssigner
 from camera_movement.camera_move_estinamtor import CameraMovementEstimator
-from view_transformer import ViewTransformer
+from view_transformer.view_transformer import ViewTransformer
 from speed_and_distance_estimator.speed_distance_estimator import SpeedAndDistance_Estimator
 
 
